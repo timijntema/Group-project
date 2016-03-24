@@ -40,8 +40,64 @@ void check_bleutooth(string *s){
 	}
 }
 
-
 void need_for_speed(int begin_value_s1, int begin_value_s2){
+//using float variable for the sensors to have the most 	accurate
+float color;
+	float  light;
+	float sonar;
+// reading the sensor value 
+	light = SensorValue[S2];
+	color = SensorValue[S1];
+	sonar = SensorValue[S3];
+	// displaying the values from above
+	nxtDisplayTextLine(1, "color: %d", color);
+	nxtDisplayTextLine(2, "light: %d", light);
+	nxtDisplayTextLine(3, "sonar: %d", sonar );
+// if an object is less than 15 centimeters the top
+	if(sonar <15) {
+		setMultipleMotors(0,motorA,motorB);
+		string s = "";
+		check_bleutooth(&s);
+	}
+	//redirect the robot by using the light sensor 
+	else if (light < 65){
+		float formule;
+		float omrek;
+		float maal = 0;
+				omrek = 65-light;
+				formule = (65+(omrek)*(1+(2/3)));
+		nxtDisplayTextLine(4, "omrekrechts: %d", omrek );
+	
+							if (omrek< 10){maal =1.2;}
+								else if(omrek>25){maal = 2 +((omrek-25)*0.1);}
+									else{(maal = 1.2+(omrek-10)*0.055);}
+		motor(motorA) = formule;//50+((60-light)*2.5)
+		motor(motorB) =45-(omrek*maal);//35  //0
+	}
+	// redirecting the robot by using hte color sensor
+	else if(color < 48) {//vorige waarde: 4
+	// float variables for best accurate values
+	float formule;
+		float omrek;
+		float maal =0;
+	
+				omrek = 48-color;
+				formule = (65+(omrek)*(1+(2/3)));
+							nxtDisplayTextLine(5, "omreklinks: %d", omrek );
+							if (omrek< 10){maal = 1.2;}
+								else if(omrek>25){maal = 2 + ((omrek - 25)*0.1);}
+									else{maal=(1.2+(omrek-10)*0.055);}
+		
+		motor(motorA) = 45-(omrek*maal);//0
+		motor(motorB) =formule ;//50+(50-color)*1+(2/3))
+	}
+	else {
+		setMultipleMotors(65,motorA,motorB);//70 //100
+	}
+}
+
+
+/*void need_for_speed(int begin_value_s1, int begin_value_s2){
 	float color;
 	float  light;
 	int sonar;
@@ -69,7 +125,7 @@ void need_for_speed(int begin_value_s1, int begin_value_s2){
 	else {
 		setMultipleMotors(80,motorA,motorB);//70 //100
 	}
-}
+}*/
 
 
 
@@ -134,8 +190,9 @@ int bleutooth_control(void){
    return stopcode;
 }
 
-
+/*
 void junction(){
+    
 	string s = "";
 	if (SensorValue[S1] < 38 && SensorValue[S2] < 50){
 		setMultipleMotors(90, motorA, motorB);
@@ -168,6 +225,41 @@ void junction(){
 		}
 	}
 }
+*/
+void junction(){
+	string s = "";
+	if (SensorValue[S1] < 38 && SensorValue[S2] < 50){
+		setMultipleMotors(90, motorA, motorB);
+		wait1Msec(30);
+		setMultipleMotors(0, motorA, motorB);
+		check_bleutooth(&s);
+		if(s == "LEFT"){
+			motor(motorA) = 0;
+			motor(motorB) = 40;
+			while(1){
+				if (SensorValue[S1] < 40){//color
+					setMultipleMotors(0, motorA, motorB);
+					break;
+				}
+			}
+		}
+		else if(s == "RIGHT"){
+			motor(motorA) = 40;
+			motor(motorB) = 0;
+			while(1){
+				if (SensorValue[S2] < 60){//light
+					setMultipleMotors(0, motorA, motorB);
+					break;
+				}
+			}
+		}
+		else if(s == "UP"){
+		
+	
+		}
+	}
+}
+
 task music(){
 	playTone(695, 14);
 	playTone(695, 14);
