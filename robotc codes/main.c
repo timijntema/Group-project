@@ -196,7 +196,7 @@ void junction(){
 	string s = "";
 	if (SensorValue[S1] < 38 && SensorValue[S2] < 50){
 		setMultipleMotors(90, motorA, motorB);
-		wait1Msec(30);
+		wait1Msec(40);
 		setMultipleMotors(0, motorA, motorB);
 		check_bleutooth(&s);
 		if(s == "LEFT"){
@@ -230,7 +230,7 @@ void junction(){
 	string s = "";
 	if (SensorValue[S1] < 38 && SensorValue[S2] < 50){
 		setMultipleMotors(90, motorA, motorB);
-		wait1Msec(30);
+		wait1Msec(40);
 		setMultipleMotors(0, motorA, motorB);
 		check_bleutooth(&s);
 		if(s == "LEFT"){
