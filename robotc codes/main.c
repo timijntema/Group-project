@@ -169,9 +169,44 @@ void junction(){
 	}
 }
 task music(){
-	playSoundFile("SuperMarioBros.rso");
-	wait1Msec(10000);
-	nVolume = 4;
+	playTone(695, 14);
+	playTone(695, 14);
+	playTone(695, 14);
+	playTone(929, 83);
+	playTone(1401, 83);
+	playTone(1251, 14);
+	playTone(1188, 14);
+	playTone(1054, 14);
+	playTone(1841, 83);
+	playTone(1401, 41);
+	playTone(1251, 14);
+	playTone(1188, 14);
+	playTone(1054, 14);
+	playTone(1841, 83);
+	playTone(1401, 41);
+	playTone(1251, 14);
+	playTone(1188, 14);
+	playTone(1251, 14);
+	playTone(1054, 55);
+	wait1Msec(280);
+	playTone(695, 14);
+	playTone(695, 14);
+	playTone(695, 14);
+	playTone(929, 83);
+	playTone(1401, 83);
+	playTone(1251, 14);
+	playTone(1188, 14);
+	playTone(1054, 14);
+	playTone(1841, 83);
+	playTone(1401, 41);
+	playTone(1251, 14);
+	playTone(1188, 14);
+	playTone(1054, 14);
+	playTone(1841, 83);
+	playTone(1401, 41);
+	playTone(1251, 14);
+	playTone(1188, 14);
+	playTone(1054, 55);
 }
 
 task main()
