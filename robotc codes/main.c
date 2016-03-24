@@ -168,6 +168,11 @@ void junction(){
 		}
 	}
 }
+task music(){
+	playSoundFile("SuperMarioBros.rso");
+	wait1Msec(10000);
+	nVolume = 4;
+}
 
 task main()
 {
@@ -183,7 +188,8 @@ task main()
 
 	//int bt_message;
 	int stopcode2 = 0;
-
+	
+	startTask (music);
 	while(1){
 		stopcode2 = bleutooth_control();
 		junction();
