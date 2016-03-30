@@ -14,6 +14,27 @@ long nDeltaTime         = 0;
 const int kMaxSizeOfMessage = 30;//create a variable for the maximum message size
 const int INBOX = 5;
 
+void speed_adjust(int index, int until, int increment, int what_motor){
+	/*
+		what_motor = 0 == both
+		what_motor = 1 == right increment
+		what_motor = 2 == left increment
+	*/
+	if (what_motor == 0){
+		for (int i = index; i >= until; i+=increment){
+			setMultipleMotors(i, motorA, motorB);
+			wait(0.1);//0.1
+		}
+	}
+	else if (what_motor == 1){
+		//adjust right motor
+	}
+	else if (what_motor == 2){
+		//adjust left motor
+	}
+	//setMultipleMotors(0, motorA, motorB);
+}
+
 void check_bleutooth(string *s){
 	/*
 		This function makes a bleutooth connection and then waits for input from the connected phone
@@ -45,7 +66,7 @@ void check_bleutooth(string *s){
 void need_for_speed(void){
 	//using float variable for the sensors to have the most 	accurate
 	float color;
-	float  light;
+	float light;
 	float sonar;
 	// reading the sensor value
 	light = SensorValue[S2];
@@ -56,10 +77,11 @@ void need_for_speed(void){
 	nxtDisplayTextLine(2, "light: %d", light);
 	nxtDisplayTextLine(3, "sonar: %d", sonar );
 	// if an object is less than 15 centimeters the top
-	if(sonar <15) {
-		setMultipleMotors(0,motorA,motorB);
+	if(sonar <35) {
+		//setMultipleMotors(0,motorA,motorB);
+		speed_adjust(60, 0, -3, 0);
 		string s = "";
-		check_bleutooth(&s);
+		check_bleutooth(&s);//laten omdraaien moet nog
 	}
 	//redirect the robot by using the light sensor
 	else if (light < 65){
@@ -169,7 +191,7 @@ int bleutooth_control(void){
     	string s = "";
     	stringFromChars(s, (char *) nRcvBuffer);
     	displayCenteredBigTextLine(4, s);
-			//vertragen
+
     	while (s != "A"){//if A is pressed the robot will resume its duty the normal way
     		nSizeOfMessage = cCmdMessageGetSize(INBOX);//misschien onderaan
     		if (nSizeOfMessage > kMaxSizeOfMessage){
