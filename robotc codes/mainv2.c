@@ -63,6 +63,52 @@ void check_bleutooth(string *s){
 	}
 }
 
+task music(){
+	/*
+	The folowing function plays a number of tones to create some sound that lets people know there is a electric car coming.
+	Due to electric cars being very quiet this is needed to prevent accidents.
+	*/
+	//frequency, duration in wait10msec
+	playTone(1054, 28);
+	wait10Msec(33);
+	playTone(788, 14);
+	wait10Msec(19);
+	playTone(656, 28);
+	wait10Msec(33);
+	playTone(656, 14);
+	wait10Msec(19);
+	playTone(877, 28);
+	wait10Msec(33);
+	playTone(987, 28);
+	wait10Msec(33);
+	playTone(929, 14);
+	wait10Msec(19);
+	playTone(877, 28);
+	wait10Msec(33);
+	playTone(788, 28);
+	wait10Msec(33);
+	playTone(1322, 28);
+	wait10Msec(33);
+	playTone(1590, 28);
+	wait10Msec(33);
+	playTone(1770, 28);
+	wait10Msec(33);
+	playTone(1401, 14);
+	wait10Msec(19);
+	playTone(1401, 28);
+	wait10Msec(33);
+	playTone(1590, 14);
+	wait10Msec(19);
+	playTone(1322, 28);
+	wait10Msec(33);
+	playTone(1054, 14);
+	wait10Msec(19);
+	playTone(1188, 14);
+	wait10Msec(19);
+	playTone(987, 14);
+	wait10Msec(19);
+}
+
 void need_for_speed(void){
 	//using float variable for the sensors to have the most 	accurate
 	float color;
@@ -103,6 +149,7 @@ void need_for_speed(void){
 			(maal = 1.2+(omrek-10)*0.055);
 		}
 
+		startTask (music);//starts music
 		motor(motorA) = formule;//50+((60-light)*2.5)
 		motor(motorB) =45-(omrek*maal);//35  //0
 	}
@@ -126,7 +173,8 @@ void need_for_speed(void){
 		else{
 			maal=(1.2+(omrek-10)*0.055);
 		}
-
+		
+		startTask (music);//starts music
 		motor(motorA) = 45-(omrek*maal);//0
 		motor(motorB) =formule ;//50+(50-color)*1+(2/3))
 	}
@@ -307,50 +355,7 @@ void junction(){
 	}
 }
 
-task music(){
-	/*
-		The folowing function plays a number of tones to create some sound that lets people know there is a electric car coming.
-		Due to electric cars being very quiet this is needed to prevent accidents.
-	*/
-	playTone(695, 14);
-	playTone(695, 14);
-	playTone(695, 14);
-	playTone(929, 83);
-	playTone(1401, 83);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 14);
-	playTone(1841, 83);
-	playTone(1401, 41);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 14);
-	playTone(1841, 83);
-	playTone(1401, 41);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1251, 14);
-	playTone(1054, 55);
-	wait1Msec(280);
-	playTone(695, 14);
-	playTone(695, 14);
-	playTone(695, 14);
-	playTone(929, 83);
-	playTone(1401, 83);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 14);
-	playTone(1841, 83);
-	playTone(1401, 41);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 14);
-	playTone(1841, 83);
-	playTone(1401, 41);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 55);
-}
+
 
 task main()
 {
@@ -371,7 +376,7 @@ task main()
 
 	int stopcode2 = 0;//for stopping the while loop in case of a remote code shutdown
 
-	startTask (music);//start music as a different task to make sure it runs at the same time as the main task
+	
 
 	while(1){
 		stopcode2 = bleutooth_control();//check for bleutooth input. This is the version of bleutooth input that takes over the robot
