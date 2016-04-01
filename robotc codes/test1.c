@@ -62,8 +62,91 @@ void check_bleutooth(string *s){
     wait1Msec(100);//no need to do a continues check every 100 miliseconds is enough
 	}
 }
-
 void need_for_speed(void){
+	//using float variable for the sensors to have the most 	accurate
+	float color;
+	float  light;
+	float sonar;
+	// reading the sensor value
+	light = SensorValue[S2];
+	color = SensorValue[S1];
+	sonar = SensorValue[S3];
+	// displaying the values from above
+	nxtDisplayTextLine(1, "color: %d", color);
+	nxtDisplayTextLine(2, "light: %d", light);
+	nxtDisplayTextLine(3, "sonar: %d", sonar );
+	// if an object is less than 15 centimeters the top
+	if(sonar <15) {
+		setMultipleMotors(0,motorA,motorB);
+		string s = "";
+		check_bleutooth(&s);
+	}
+	//redirect the robot by using the light sensor
+	else if (light < 69){
+		float formule;
+		float omrek;
+		float formule2;
+		omrek = light-39;
+nxtDisplayTextLine(4, "lomrek : %d", omrek);
+		
+
+		if(omrek<5){
+			formule =100;
+			formule2=0;
+	}
+	else if (omrek<10){
+		formule = -0.4*omrek+100;
+		formule2 = -1.428*omrek+50;
+		
+	}
+
+	else{
+		formule = -0.9*omrek+100;
+		formule2 = -1.428*omrek+50;
+	}
+		motor(motorA) = formule;//50+((60-light)*2.5)
+		motor(motorB) =formule2;//35  //0
+	}
+	// redirecting the robot by using hte color sensor
+	else if(color < 51) {//vorige waarde: 4
+		// float variables for best accurate values
+	
+		float formule;
+		float omrek;
+		float formule2;
+
+		omrek = color-22;
+nxtDisplayTextLine(5, "comrek : %d", omrek);
+
+		if(omrek<5)
+		{
+			formule =100;
+			formule2=0;
+	}
+
+		else if (omrek<10)
+{
+		formule = -0.4*omrek+100;
+		formule2 = -1.428*omrek+50;
+	}
+
+	else{
+
+
+		formule = -0.9*omrek+100;
+		formule2 = -1.428*omrek+50;
+
+	}
+
+		motor(motorA) = formule2;//0
+		motor(motorB) =formule ;//50+(50-color)*1+(2/3))
+	}
+	else {
+		setMultipleMotors(50,motorA,motorB);//70 //100
+	}
+}
+
+/*void need_for_speed(void){
 	//using float variable for the sensors to have the most 	accurate
 	float color;
 	float light;
@@ -149,7 +232,7 @@ void need_for_speed(void){
 	else {
 		setMultipleMotors(65,motorA,motorB);//70 //100
 	}
-}
+}*/
 
 //a block of discontinued code kept because it was working but not smoothly
 /*void need_for_speed(int begin_value_s1, int begin_value_s2){
