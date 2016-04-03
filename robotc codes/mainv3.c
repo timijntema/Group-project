@@ -42,6 +42,12 @@ void check_bleutooth(string *s){
 	}
 }
 
+task music(){
+	//plays music while robot is in motion
+	playSoundFile("Supermario.rmd");
+	wait1Msec(10000);
+}
+
 void need_for_speed(void){
 	//using float variable for the sensors to have the most 	accurate
 	float color;
@@ -83,6 +89,8 @@ void need_for_speed(void){
 		formule = -0.9*omrek+100;
 		formule2 = -1.428*omrek+50;
 	}
+	
+		startTask(music);//starts the music
 		motor(motorA) = formule;//50+((60-light)*2.5)
 		motor(motorB) =formule2;//35  //0
 	}
@@ -116,6 +124,7 @@ void need_for_speed(void){
 
 	}
 
+		startTask(music);//starts the music
 		motor(motorA) = formule2;//0
 		motor(motorB) =formule ;//50+(50-color)*1+(2/3))
 	}
@@ -267,6 +276,8 @@ void junction(){
 	if (SensorValue[S1] < 38 && SensorValue[S2] < 50){
 		setMultipleMotors(90, motorA, motorB);//Drive the cart forward a little for 40 miliseconds. This way it ends up more straight on the line after turning
 		wait1Msec(40);
+		stopTask(music);//stops the music
+		clearSounds();//clears the sound buffer
 		setMultipleMotors(0, motorA, motorB);//stop the robot
 		check_bleutooth(&s);//wait for bleutooth input
 
@@ -360,7 +371,7 @@ task main()
 
 	int stopcode2 = 0;//for stopping the while loop in case of a remote code shutdown
 
-	//startTask (music);//start music as a different task to make sure it runs at the same time as the main task
+	
 
 	while(1){
 		stopcode2 = bleutooth_control();//check for bleutooth input. This is the version of bleutooth input that takes over the robot
