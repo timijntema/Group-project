@@ -62,6 +62,13 @@ void check_bleutooth(string *s){
     wait1Msec(100);//no need to do a continues check every 100 miliseconds is enough
 	}
 }
+
+task music(){
+	//plays music while robot is in motion
+	playSoundFile("Supermario.rmd");
+	wait1Msec(10000);
+}
+
 void need_for_speed(void){
 	//using float variable for the sensors to have the most 	accurate
 	float color;
@@ -104,6 +111,7 @@ nxtDisplayTextLine(4, "lomrek : %d", omrek);
 		formule = -0.9*omrek+100;
 		formule2 = -1.428*omrek+50;
 	}
+		startTask(music);//starts the music
 		motor(motorA) = formule;//50+((60-light)*2.5)
 		motor(motorB) =formule2;//35  //0
 	}
@@ -137,7 +145,8 @@ nxtDisplayTextLine(5, "comrek : %d", omrek);
 		formule2 = -1.428*omrek+50;
 
 	}
-
+	
+		startTask(music);//starts the music
 		motor(motorA) = formule2;//0
 		motor(motorB) =formule ;//50+(50-color)*1+(2/3))
 	}
@@ -379,10 +388,13 @@ void junction(string *junction_string){
 	if (SensorValue[S1] < 38 && SensorValue[S2] < 50){
 		setMultipleMotors(50, motorA, motorB);//Drive the cart forward a little for 40 miliseconds. This way it ends up more straight on the line after turning
 		wait1Msec(50);
+		stopTask(music);//stops the music
+		clearSounds();//clears the sound buffer
 		setMultipleMotors(0, motorA, motorB);//stop the robot
 		//check_bleutooth(&s);//wait for bleutooth input
 		//displayCenteredBigTextLine(4, *junction_string);
 		wait(0.02);
+		
 		while (1){
 			if(*junction_string == "LEFT"){//if the input is "LEFT" turn left until you read the black line color and then continue your normal duty
 				motor(motorA) = 0;
@@ -423,50 +435,6 @@ void junction(string *junction_string){
 	}
 }
 
-task music(){
-	/*
-		The folowing function plays a number of tones to create some sound that lets people know there is a electric car coming.
-		Due to electric cars being very quiet this is needed to prevent accidents.
-	*/
-	playTone(695, 14);
-	playTone(695, 14);
-	playTone(695, 14);
-	playTone(929, 83);
-	playTone(1401, 83);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 14);
-	playTone(1841, 83);
-	playTone(1401, 41);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 14);
-	playTone(1841, 83);
-	playTone(1401, 41);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1251, 14);
-	playTone(1054, 55);
-	wait1Msec(280);
-	playTone(695, 14);
-	playTone(695, 14);
-	playTone(695, 14);
-	playTone(929, 83);
-	playTone(1401, 83);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 14);
-	playTone(1841, 83);
-	playTone(1401, 41);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 14);
-	playTone(1841, 83);
-	playTone(1401, 41);
-	playTone(1251, 14);
-	playTone(1188, 14);
-	playTone(1054, 55);
-}
 
 task main()
 {
@@ -487,7 +455,7 @@ task main()
 
 	int stopcode2 = 0;//for stopping the while loop in case of a remote code shutdown
 
-	startTask (music);//start music as a different task to make sure it runs at the same time as the main task
+	
 
 	string s = "";
 	TFileIOResult nBTCmdRdErrorStatus;
