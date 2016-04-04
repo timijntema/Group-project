@@ -238,7 +238,7 @@ void junction(string *junction_string){
 		In case the direction is already chosen it just goes to the already chosen direction
 	*/
 
-	if (SensorValue[S1] < (mincolor+10) && SensorValue[S2] < (minlight+10)){//was 50
+	if (SensorValue[S1] < (mincolor+10) && SensorValue[S2] < (minlight+10)){//the minimul light value + 10 for the correct moment to stop at a line 
 		setMultipleMotors(50, motorA, motorB);//Drive the cart forward a little for 50 miliseconds. This way it ends up more straight on the line after turning
 		wait1Msec(50);
 		stopTask(music);//stops the music
@@ -253,6 +253,7 @@ void junction(string *junction_string){
 				*junction_string = "";
 				while(1){
 					if (SensorValue[S1] < 40){//color sensor check
+						wait1Msec(5);
 						setMultipleMotors(0, motorA, motorB);
 						break;
 					}
@@ -266,6 +267,7 @@ void junction(string *junction_string){
 				*junction_string = "";
 				while(1){
 					if (SensorValue[S2] < 65){//light sensor check
+						wait1Msec(5);
 						setMultipleMotors(0, motorA, motorB);
 						break;
 					}
