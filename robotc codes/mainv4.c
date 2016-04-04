@@ -58,7 +58,7 @@ task music(){
 	wait1Msec(10000);
 }
 
-void need_for_speed(void){
+void linefollow(void){
 	//using float variable for the sensors to have the most 	accurate
 	float color;
 	float light;
@@ -310,7 +310,7 @@ task main()
 			stopcode2 = bleutooth_control(&s);//check for bleutooth input. This is the version of bleutooth input that takes over the robot
 		}
 		junction(&s);//check for an intersection
-		need_for_speed();//check if the line is curving and if not then just drive
+		linefollow();//check if the line is curving and if not then just drive
 		if(stopcode2 == 1){//if "C" is pressed in the bleutooth_control function then stop the code completely
 			return;
 		}

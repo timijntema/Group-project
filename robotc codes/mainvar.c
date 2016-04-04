@@ -108,25 +108,29 @@ void linefollow(void){
 		float formule;
 		float omrek;
 		float formule2;
-		omrek = light-minlight;
-		// show the result of the omrek math
-		nxtDisplayTextLine(4, "lomrek : %d", omrek);
+		//omrek is used to can use the formules in every surroundings
 
+		omrek = light-minlight;
+		// show the result of the omrek on line 4
+		nxtDisplayTextLine(4, "lomrek : %f", omrek);
+		// if omrek is lower then 5 use 100 and 1 for a real sharp turn
 		if(omrek<5){
 		formule =100;
-			formule2=1;
+		formule2=1;
 		}
-
+		// if the omrek is between 5 and 10 use a formule that gives a heavier control
 		else if (omrek<10){
 			formule = -0.4*omrek+100;
 			formule2 = -1.428*omrek+50;
 		}
+		// the standaard formule for following the line 
 		else{
 			formule = -0.9*omrek+100;
 			formule2 = -1.428*omrek+50;
 		}
 
 		startTask(music);//starts the music
+		// give the motor a and b the result of the formules 
 		motor(motorA) = formule;//50+((60-light)*2.5)
 		motor(motorB) =formule2;//35  //0
 	}
@@ -137,31 +141,34 @@ void linefollow(void){
 		float formule;
 		float omrek;
 		float formule2;
-
+		//omrek is used to can use the formules in every surroundings
 		omrek = color-mincolor;
+		// show the result of the omrek on line 5
 		nxtDisplayTextLine(5, "comrek : %d", omrek);
-
+	// if omrek is lower then 5 use 100 and 1 for a real sharp turn
 	if(omrek<5){
 		formule =100;
 			formule2=1;
 		}
-
+		// if the omrek is between 5 and 10 use a formule that gives a heavier control
 		else if (omrek<10)
 		{
 			formule = -0.4*omrek+100;
 			formule2 = -1.428*omrek+50;
 		}
-
+		// the standaard formule for following the line 
 		else {
 			formule = -0.9*omrek+100;
 			formule2 = -1.428*omrek+50;
 		}
 
 		startTask(music);//starts the music
+		// give the motor a and b the result of the formules 
 		motor(motorA) = formule2;//0
 		motor(motorB) =formule ;//50+(50-color)*1+(2/3))
 	}
 	else {
+		//if their isn't steering nessasary then both motors gets 50 as speed 
 		setMultipleMotors(50,motorA,motorB);//70 //100
 	}
 }
