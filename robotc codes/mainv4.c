@@ -23,7 +23,7 @@ void speed_adjust(int index, int until, int increment, int what_motor){
 	if (what_motor == 0){
 		for (int i = index; i >= until; i+=increment){
 			setMultipleMotors(i, motorA, motorB);
-			wait(0.1);//0.1
+			wait(0.09);//0.1
 		}
 	}
 	else if (what_motor == 1){
@@ -83,10 +83,27 @@ void need_for_speed(void){
 	nxtDisplayTextLine(2, "light: %d", light);
 	nxtDisplayTextLine(3, "sonar: %d", sonar );
 	// if an object is less than 15 centimeters the top
-	if(sonar <15) {
-		setMultipleMotors(0,motorA,motorB);
-		string s = "";
-		check_bleutooth(&s);
+	if(sonar < 30) {
+		speed_adjust(60, 0, -4, 0);
+		//string s = "";
+		//check_bleutooth(&s);
+		for (int i = 0; i < 10;){
+			motor[motorA] = i;
+			motor[motorB] = -i;//draait rechtsom
+			wait(0.4);
+			i++;
+		}
+		while(1){
+			if (SensorValue[S2] < 60){
+				for (int i = 10; i < 0;){
+					motor[motorA] = i;
+					motor[motorB] = -i;//draait rechtsom
+					wait(0.4);
+					i+=2;
+				}
+				break;
+			}
+		}
 	}
 	//redirect the robot by using the light sensor
 	else if (light < 69){
@@ -95,7 +112,7 @@ void need_for_speed(void){
 		float formule2;
 		omrek = light-39;
 nxtDisplayTextLine(4, "lomrek : %d", omrek);
-		
+
 
 		if(omrek<5){
 			formule =100;
@@ -104,7 +121,7 @@ nxtDisplayTextLine(4, "lomrek : %d", omrek);
 	else if (omrek<10){
 		formule = -0.4*omrek+100;
 		formule2 = -1.428*omrek+50;
-		
+
 	}
 
 	else{
@@ -118,7 +135,7 @@ nxtDisplayTextLine(4, "lomrek : %d", omrek);
 	// redirecting the robot by using hte color sensor
 	else if(color < 51) {//vorige waarde: 4
 		// float variables for best accurate values
-	
+
 		float formule;
 		float omrek;
 		float formule2;
@@ -145,7 +162,7 @@ nxtDisplayTextLine(5, "comrek : %d", omrek);
 		formule2 = -1.428*omrek+50;
 
 	}
-	
+
 		startTask(music);//starts the music
 		motor(motorA) = formule2;//0
 		motor(motorB) =formule ;//50+(50-color)*1+(2/3))
@@ -286,60 +303,45 @@ int bleutooth_control(string *s){
   ubyte nRcvBuffer[kMaxSizeOfMessage];
   int stopcode = 0;
 
-  nSizeOfMessage = cCmdMessageGetSize(INBOX);
+	while (*s != "A"){//if A is pressed the robot will resume its duty the normal way
+  	nSizeOfMessage = cCmdMessageGetSize(INBOX);//misschien onderaan
+    if (nSizeOfMessage > kMaxSizeOfMessage){
+    	nSizeOfMessage = kMaxSizeOfMessage;
+ 		}
+ 		if (nSizeOfMessage > 0){
+			nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
+		  nRcvBuffer[nSizeOfMessage] = '\0';
 
-	if (nSizeOfMessage > kMaxSizeOfMessage){
-      nSizeOfMessage = kMaxSizeOfMessage;
- 	}
-
-	if (nSizeOfMessage > 0){//Only if an actual message is being received the bleutooth take over system should activate
-    	nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
-    	nRcvBuffer[nSizeOfMessage] = '\0';
-
-    	*s = "";
-    	stringFromChars(*s, (char *) nRcvBuffer);
-    	displayCenteredBigTextLine(4, *s);
-
-    	while (*s != "A"){//if A is pressed the robot will resume its duty the normal way
-    		nSizeOfMessage = cCmdMessageGetSize(INBOX);//misschien onderaan
-    		if (nSizeOfMessage > kMaxSizeOfMessage){
-      		nSizeOfMessage = kMaxSizeOfMessage;
- 				}
- 				if (nSizeOfMessage > 0){
-		    	nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
-		    	nRcvBuffer[nSizeOfMessage] = '\0';
-
-		    	*s = "";
-		    	stringFromChars(*s, (char *) nRcvBuffer);
-		    	displayCenteredBigTextLine(4, *s);
-		  	}
-				//The next 4 if statements are for controlling the robot manually
-    		if(*s == "LEFT"){//if bleutooth input is left turn left
-    			motor(motorA) = 0;
-    			motor(motorB) = 30;
-    		}
-    		else if(*s == "RIGHT"){//if bleutooth input is right turn right
-    			motor(motorA) = 30;
-    			motor(motorB) = 0;
-    		}
-    		else if (*s == "UP"){//if bleutooth input is up drive forward
-    			setMultipleMotors(50, motorB, motorA);
-    		}
-    		else if (*s == "DOWN"){//if bleutooth input is down drive backwards
-    			setMultipleMotors(-50, motorB, motorA);
-    		}
-    		/*else {//hier
-    			setMultipleMotors(0, motorA, motorB);
-    		}*/
-    		if (*s == "C"){//if the C button is pressed the loop stops and the stopcode == 1 to stop de code if neccesairy
-    			stopcode = 1;
-    			break;
-    		}
+		 	*s = "";
+		  stringFromChars(*s, (char *) nRcvBuffer);
+		  displayCenteredBigTextLine(4, *s);
+		 }
+			//The next 4 if statements are for controlling the robot manually
+    	if(*s == "LEFT"){//if bleutooth input is left turn left
+    		motor(motorA) = 0;
+    		motor(motorB) = 30;
     	}
-   }
-   *s = "";
-   return stopcode;//either 1 or 0 depending on the "C" button being pressed or not
-}
+    	else if(*s == "RIGHT"){//if bleutooth input is right turn right
+    		motor(motorA) = 30;
+    		motor(motorB) = 0;
+    	}
+    	else if (*s == "UP"){//if bleutooth input is up drive forward
+    		setMultipleMotors(50, motorB, motorA);
+    	}
+    	else if (*s == "DOWN"){//if bleutooth input is down drive backwards
+    		setMultipleMotors(-50, motorB, motorA);
+    	}
+    	/*else {//hier
+    		setMultipleMotors(0, motorA, motorB);
+    	}*/
+    	if (*s == "C"){//if the C button is pressed the loop stops and the stopcode == 1 to stop de code if neccesairy
+    		stopcode = 1;
+    		break;
+    	}
+    }
+  	*s = "";
+  	return stopcode;//either 1 or 0 depending on the "C" button being pressed or not
+  }
 
 //discontinued working code that we keep to make sure we can go back to it if needed. A newer version exists.
 /*
@@ -385,7 +387,7 @@ void junction(string *junction_string){
 	*/
 	//string s = "";
 
-	if (SensorValue[S1] < 38 && SensorValue[S2] < 50){
+	if (SensorValue[S1] < 38 && SensorValue[S2] < 55){//was 50
 		setMultipleMotors(50, motorA, motorB);//Drive the cart forward a little for 40 miliseconds. This way it ends up more straight on the line after turning
 		wait1Msec(50);
 		stopTask(music);//stops the music
@@ -394,7 +396,7 @@ void junction(string *junction_string){
 		//check_bleutooth(&s);//wait for bleutooth input
 		//displayCenteredBigTextLine(4, *junction_string);
 		wait(0.02);
-		
+
 		while (1){
 			if(*junction_string == "LEFT"){//if the input is "LEFT" turn left until you read the black line color and then continue your normal duty
 				motor(motorA) = 0;
@@ -455,7 +457,7 @@ task main()
 
 	int stopcode2 = 0;//for stopping the while loop in case of a remote code shutdown
 
-	
+
 
 	string s = "";
 	TFileIOResult nBTCmdRdErrorStatus;
@@ -472,11 +474,13 @@ task main()
     if (nSizeOfMessage > 0){//if the message is not empty, put the received information in string s
     	nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
     	nRcvBuffer[nSizeOfMessage] = '\0';
+    	s = "";
     	stringFromChars(s, (char *) nRcvBuffer);
     	displayCenteredBigTextLine(4, s);
     }
     if (s == "B"){
     	setMultipleMotors(0, motorA, motorB);
+    	//wait(3);
 			stopcode2 = bleutooth_control(&s);//check for bleutooth input. This is the version of bleutooth input that takes over the robot
 		}
 		junction(&s);//check for an intersection
