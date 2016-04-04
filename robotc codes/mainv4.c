@@ -14,25 +14,14 @@ long nDeltaTime         = 0;
 const int kMaxSizeOfMessage = 30;//create a variable for the maximum message size
 const int INBOX = 5;
 
-void speed_adjust(int index, int until, int increment, int what_motor){
+void speed_adjust(int index, int until, int increment){
 	/*
-		what_motor = 0 == both
-		what_motor = 1 == right increment
-		what_motor = 2 == left increment
+		This function is used for slowing down the motor slowly instead of stopping immediatly
 	*/
-	if (what_motor == 0){
-		for (int i = index; i >= until; i+=increment){
-			setMultipleMotors(i, motorA, motorB);
-			wait(0.09);//0.1
-		}
+	for (int i = index; i >= until; i+=increment){
+		setMultipleMotors(i, motorA, motorB);
+		wait(0.09);
 	}
-	else if (what_motor == 1){
-		//adjust right motor
-	}
-	else if (what_motor == 2){
-		//adjust left motor
-	}
-	//setMultipleMotors(0, motorA, motorB);
 }
 
 void check_bleutooth(string *s){
@@ -72,32 +61,35 @@ task music(){
 void need_for_speed(void){
 	//using float variable for the sensors to have the most 	accurate
 	float color;
-	float  light;
+	float light;
 	float sonar;
+
 	// reading the sensor value
 	light = SensorValue[S2];
 	color = SensorValue[S1];
 	sonar = SensorValue[S3];
+
 	// displaying the values from above
 	nxtDisplayTextLine(1, "color: %d", color);
 	nxtDisplayTextLine(2, "light: %d", light);
 	nxtDisplayTextLine(3, "sonar: %d", sonar );
-	// if an object is less than 15 centimeters the top
+
+	// if an object is closer then 30 centimeters do the folowing
 	if(sonar < 30) {
-		speed_adjust(60, 0, -4, 0);
-		//string s = "";
-		//check_bleutooth(&s);
-		for (int i = 0; i < 10;){
+		speed_adjust(60, 0, -4);//slow down
+
+		for (int i = 0; i < 10;){//slowly start turning
 			motor[motorA] = i;
-			motor[motorB] = -i;//draait rechtsom
+			motor[motorB] = -i;
 			wait(0.4);
 			i++;
 		}
-		while(1){
+
+		while(1){//wait until you see the line
 			if (SensorValue[S2] < 60){
-				for (int i = 10; i < 0;){
+				for (int i = 10; i < 0;){//slow down the turning speed
 					motor[motorA] = i;
-					motor[motorB] = -i;//draait rechtsom
+					motor[motorB] = -i;
 					wait(0.4);
 					i+=2;
 				}
@@ -105,63 +97,59 @@ void need_for_speed(void){
 			}
 		}
 	}
+
 	//redirect the robot by using the light sensor
 	else if (light < 69){
 		float formule;
 		float omrek;
 		float formule2;
 		omrek = light-39;
-nxtDisplayTextLine(4, "lomrek : %d", omrek);
-
+		nxtDisplayTextLine(4, "lomrek : %d", omrek);
 
 		if(omrek<5){
 			formule =100;
 			formule2=0;
-	}
-	else if (omrek<10){
-		formule = -0.4*omrek+100;
-		formule2 = -1.428*omrek+50;
+		}
+		else if (omrek<10){
+			formule = -0.4*omrek+100;
+			formule2 = -1.428*omrek+50;
+		}
+		else{
+			formule = -0.9*omrek+100;
+			formule2 = -1.428*omrek+50;
+		}
 
-	}
-
-	else{
-		formule = -0.9*omrek+100;
-		formule2 = -1.428*omrek+50;
-	}
-		startTask(music);//starts the music
+		//startTask(music);//starts the music
 		motor(motorA) = formule;//50+((60-light)*2.5)
 		motor(motorB) =formule2;//35  //0
 	}
+
 	// redirecting the robot by using hte color sensor
 	else if(color < 51) {//vorige waarde: 4
 		// float variables for best accurate values
-
 		float formule;
 		float omrek;
 		float formule2;
 
 		omrek = color-22;
-nxtDisplayTextLine(5, "comrek : %d", omrek);
+		nxtDisplayTextLine(5, "comrek : %d", omrek);
 
 		if(omrek<5)
 		{
 			formule =100;
 			formule2=0;
-	}
+		}
 
 		else if (omrek<10)
-{
-		formule = -0.4*omrek+100;
-		formule2 = -1.428*omrek+50;
-	}
+		{
+			formule = -0.4*omrek+100;
+			formule2 = -1.428*omrek+50;
+		}
 
-	else{
-
-
-		formule = -0.9*omrek+100;
-		formule2 = -1.428*omrek+50;
-
-	}
+		else {
+			formule = -0.9*omrek+100;
+			formule2 = -1.428*omrek+50;
+		}
 
 		startTask(music);//starts the music
 		motor(motorA) = formule2;//0
@@ -172,139 +160,19 @@ nxtDisplayTextLine(5, "comrek : %d", omrek);
 	}
 }
 
-/*void need_for_speed(void){
-	//using float variable for the sensors to have the most 	accurate
-	float color;
-	float light;
-	float sonar;
-	// reading the sensor value
-	light = SensorValue[S2];
-	color = SensorValue[S1];
-	sonar = SensorValue[S3];
-	// displaying the values from above
-	nxtDisplayTextLine(1, "color: %d", color);
-	nxtDisplayTextLine(2, "light: %d", light);
-	nxtDisplayTextLine(3, "sonar: %d", sonar );
-	// if an object is less than 15 centimeters the top
-	if(sonar < 35) {
-		//setMultipleMotors(0,motorA,motorB);
-		speed_adjust(60, 0, -4, 0);
-		string s = "";
-		//check_bleutooth(&s);//laten omdraaien moet nog
-		for (int i = 0; i < 10; i++){
-			motor[motorA] = i;
-			motor[motorB] = -i;//draait rechtsom
-			wait(0.4);
-		}
-		while(1){
-			if (SensorValue[S2] <60){
-				for (int i = 10; i > 0;){
-					motor[motorA] = i;
-					motor[motorB] = -i;//draait rechtsom
-					wait(0.1);
-					i-=2;
-				}
-				break;
-			}
-		}
-	}
-	//redirect the robot by using the light sensor
-	else if (light < 65){
-		float formule;
-		float omrek;
-		float maal = 0;
-
-		omrek = 65-light;
-		formule = (65+(omrek)*(1+(2/3)));
-		nxtDisplayTextLine(4, "omrekrechts: %d", omrek );
-
-		if (omrek< 10){
-			maal =1.2;
-		}
-		else if(omrek>25){
-			maal = 2 +((omrek-25)*0.1);
-		}
-		else {
-			(maal = 1.2+(omrek-10)*0.055);
-		}
-
-		motor(motorA) = formule;//50+((60-light)*2.5)
-		motor(motorB) =45-(omrek*maal);//35  //0
-	}
-	// redirecting the robot by using hte color sensor
-	else if(color < 48) {//vorige waarde: 4
-		// float variables for best accurate values
-		float formule;
-		float omrek;
-		float maal =0;
-
-		omrek = 48-color;
-		formule = (65+(omrek)*(1+(2/3)));
-		nxtDisplayTextLine(5, "omreklinks: %d", omrek );
-
-		if (omrek< 10){
-			maal = 1.2;
-		}
-		else if(omrek>25){
-			maal = 2 + ((omrek - 25)*0.1);
-		}
-		else{
-			maal=(1.2+(omrek-10)*0.055);
-		}
-
-		motor(motorA) = 45-(omrek*maal);//0
-		motor(motorB) =formule ;//50+(50-color)*1+(2/3))
-	}
-	else {
-		setMultipleMotors(65,motorA,motorB);//70 //100
-	}
-}*/
-
-//a block of discontinued code kept because it was working but not smoothly
-/*void need_for_speed(int begin_value_s1, int begin_value_s2){
-	float color;
-	float  light;
-	int sonar;
-
-	light = SensorValue[S2];
-	color = SensorValue[S1];
-	sonar = SensorValue[S3];
-	nxtDisplayTextLine(1, "color: %d", color);
-	nxtDisplayTextLine(2, "light: %d", light);
-	nxtDisplayTextLine(3, "sonar: %d", sonar );
-
-	if(sonar <15) {
-		setMultipleMotors(0,motorA,motorB);
-		string s = "";
-		check_bleutooth(&s);
-	}
-	else if (light < 60){
-		motor(motorA) = (60+((60-light)*2));//50+((60-light)*2.5)
-		motor(motorB) = 0;//35  //0
-	}
-	else if(color < 45) {//vorige waarde: 4
-		motor(motorA) = 0;//0
-		motor(motorB) = (50+(50-color)*(1+(2/3)));//50+(50-color)*1+(2/3))
-	}
-	else {
-		setMultipleMotors(80,motorA,motorB);//70 //100
-	}
-}*/
-
-
-
 int bleutooth_control(string *s){
 	/*
 		This code is for taking over the robot completely using bleutooth to make sure you can stop de robot in case its needed.
-		pressing the middle button ("FIRE") on the phone stops the robot due to it not being included in the code here for another function.
+		pressing the middle button ("FIRE") on the phone stops the robot due to it not being included in the code here.
+		To get in to this function you have to press "B"
 	*/
 	TFileIOResult nBTCmdRdErrorStatus;
-  int nSizeOfMessage;
-  ubyte nRcvBuffer[kMaxSizeOfMessage];
-  int stopcode = 0;
+ 	int nSizeOfMessage;
+ 	ubyte nRcvBuffer[kMaxSizeOfMessage];
+ 	int stopcode = 0;
 
 	while (*s != "A"){//if A is pressed the robot will resume its duty the normal way
-  	nSizeOfMessage = cCmdMessageGetSize(INBOX);//misschien onderaan
+		nSizeOfMessage = cCmdMessageGetSize(INBOX);
     if (nSizeOfMessage > kMaxSizeOfMessage){
     	nSizeOfMessage = kMaxSizeOfMessage;
  		}
@@ -313,79 +181,49 @@ int bleutooth_control(string *s){
 		  nRcvBuffer[nSizeOfMessage] = '\0';
 
 		 	*s = "";
-		  stringFromChars(*s, (char *) nRcvBuffer);
+		  stringFromChars(*s, (char *) nRcvBuffer);//put bluetooth input in string s
 		  displayCenteredBigTextLine(4, *s);
-		 }
-			//The next 4 if statements are for controlling the robot manually
-    	if(*s == "LEFT"){//if bleutooth input is left turn left
-    		motor(motorA) = 0;
-    		motor(motorB) = 30;
-    	}
-    	else if(*s == "RIGHT"){//if bleutooth input is right turn right
-    		motor(motorA) = 30;
-    		motor(motorB) = 0;
-    	}
-    	else if (*s == "UP"){//if bleutooth input is up drive forward
-    		setMultipleMotors(50, motorB, motorA);
-    	}
-    	else if (*s == "DOWN"){//if bleutooth input is down drive backwards
-    		setMultipleMotors(-50, motorB, motorA);
-    	}
-    	/*else {//hier
-    		setMultipleMotors(0, motorA, motorB);
-    	}*/
-    	if (*s == "C"){//if the C button is pressed the loop stops and the stopcode == 1 to stop de code if neccesairy
-    		stopcode = 1;
-    		break;
-    	}
-    }
-  	*s = "";
-  	return stopcode;//either 1 or 0 depending on the "C" button being pressed or not
-  }
-
-//discontinued working code that we keep to make sure we can go back to it if needed. A newer version exists.
-/*
-void junction(){
-
-	string s = "";
-	if (SensorValue[S1] < 38 && SensorValue[S2] < 50){
-		setMultipleMotors(90, motorA, motorB);f
-		wait1Msec(40);
-		setMultipleMotors(0, motorA, motorB);
-		check_bleutooth(&s);
-		if(s == "LEFT"){
-			motor(motorA) = 0;
-  		motor(motorB) = 40;
-  		while(1){
-  			if (SensorValue[S1] < 40){//color
-  				setMultipleMotors(0, motorA, motorB);
-  				break;
-  			}
-  		}
-  	}
-  	else if(s == "RIGHT"){
-  		motor(motorA) = 40;
-  		motor(motorB) = 0;
-  		while(1){
-  			if (SensorValue[S2] < 60){//light
-  				setMultipleMotors(0, motorA, motorB);
-  				break;
-  			}
-  		}
-  	}
-  	else if(s == "UP"){
-    	setMultipleMotors(40, motorA,motorB);
-    	wait10Msec(10);
 		}
-	}
+		//The next 4 if statements are for controlling the robot manually
+		if(*s == "LEFT"){//if bleutooth input is left turn left
+		  motor(motorA) = 0;
+		  motor(motorB) = 30;
+		  startTask(music);//make sure the music is running
+		}
+    else if(*s == "RIGHT"){//if bleutooth input is right turn right
+    	motor(motorA) = 30;
+    	motor(motorB) = 0;
+      startTask(music);
+    }
+    else if (*s == "UP"){//if bleutooth input is up drive forward
+    	setMultipleMotors(50, motorB, motorA);
+    	startTask(music);
+    }
+    else if (*s == "DOWN"){//if bleutooth input is down drive backwards
+    	setMultipleMotors(-50, motorB, motorA);
+    	startTask(music);
+    }
+    else {//if there is no correct input turn off the motors
+    	setMultipleMotors(0, motorA, motorB);
+    	stopTask(music);//make sure the music is stopped
+    	clearSounds();//empty the buffer
+    }
+    if (*s == "C"){//if the C button is pressed the loop stops and the stopcode == 1 to stop de code from running
+    	stopcode = 1;
+    	stopTask(music);
+    	clearSounds();
+    	break;
+    }
+  }
+  *s = "";//make sure s is empty
+  return stopcode;//output of the function used to stop the code if chosen
 }
-*/
 
 void junction(string *junction_string){
 	/*
 		This code stops the robot at an intersection to make sure you can chose for it to go straight left or right.
+		In case the direction is already chosen it just goes to the already chosen direction
 	*/
-	//string s = "";
 
 	if (SensorValue[S1] < 38 && SensorValue[S2] < 55){//was 50
 		setMultipleMotors(50, motorA, motorB);//Drive the cart forward a little for 40 miliseconds. This way it ends up more straight on the line after turning
@@ -393,8 +231,6 @@ void junction(string *junction_string){
 		stopTask(music);//stops the music
 		clearSounds();//clears the sound buffer
 		setMultipleMotors(0, motorA, motorB);//stop the robot
-		//check_bleutooth(&s);//wait for bleutooth input
-		//displayCenteredBigTextLine(4, *junction_string);
 		wait(0.02);
 
 		while (1){
@@ -423,13 +259,15 @@ void junction(string *junction_string){
 				}
 				break;
 			}
-			//if up just stop the loop
+
+			//if up just stop the loop to exit
 			else if(*junction_string == "UP"){
 				setMultipleMotors(50, motorA, motorB);
 				wait(0.2);
 				break;
 			}
-			else if (*junction_string == ""){
+
+			else if (*junction_string == ""){//When no input stop the robot
 				setMultipleMotors(0, motorA, motorB);
 				check_bleutooth(junction_string);
 			}
@@ -444,22 +282,11 @@ task main()
 		The main function contains just an infinite while loop that continues to call all the functions before mentioned. In the called
 		functions we check for specific things like the line curving or a bleutooth input.
 	*/
-
-	//read the beginvalues of the light sensors
-	/*int begin_value_s1 = SensorValue[S1];
-	int begin_value_s2 = SensorValue[S2];*/
-
-	//delayed startup nog maken
-	/*for (int i = 0; i< 100; i+=5){
-		setMultipleMotors(i, motorA, motorB);
-		wait(0.1);
-	}*/
-
 	int stopcode2 = 0;//for stopping the while loop in case of a remote code shutdown
 
+	startTask(music);//start the music in a seperate thread
 
-
-	string s = "";
+	string s = "";//create a string
 	TFileIOResult nBTCmdRdErrorStatus;
   int nSizeOfMessage;
   ubyte nRcvBuffer[kMaxSizeOfMessage];
@@ -475,12 +302,11 @@ task main()
     	nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
     	nRcvBuffer[nSizeOfMessage] = '\0';
     	s = "";
-    	stringFromChars(s, (char *) nRcvBuffer);
+    	stringFromChars(s, (char *) nRcvBuffer);//put the received data in string s
     	displayCenteredBigTextLine(4, s);
     }
-    if (s == "B"){
+    if (s == "B"){//bluetooth override
     	setMultipleMotors(0, motorA, motorB);
-    	//wait(3);
 			stopcode2 = bleutooth_control(&s);//check for bleutooth input. This is the version of bleutooth input that takes over the robot
 		}
 		junction(&s);//check for an intersection
