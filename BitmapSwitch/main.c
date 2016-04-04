@@ -14,12 +14,12 @@ int currentjunctionrow = 0,currentjunctioncollumn = 0;
 char first_junction = '0';
 //The map that is used to find the route 
 int matrix[][ARRAY_SIZE] ={     {0,0,0,0,0,0,0,0,0},
-                                {0,5,0,1,0,0,1,4,0},
-                                {0,4,1,4,0,1,0,1,0},
+                                {0,5,0,1,0,1,0,1,0},
+                                {1,4,1,4,1,4,1,4,1},
                                 {0,1,0,1,0,1,0,1,0},
-                                {0,4,1,4,1,4,1,4,0},
-                                {0,1,0,0,0,1,0,1,0},
-                                {0,2,0,0,0,1,0,1,0}};
+                                {0,1,0,1,1,1,1,1,1},
+                                {0,1,0,1,0,1,0,1,0},
+                                {0,2,0,0,0,0,0,1,0}};
 
 char instructions[ARRAY_SIZE];
 
@@ -36,6 +36,7 @@ void finding_place(int place_number){
 }
 //First junction waarde bewaren want anders weet ik niet welke kant hij op rijdt. 
 void junction(){
+    printf("Junction \n");
     currentjunctionrow = currentrow;
     currentjunctioncollumn = currentcollumn;
     if(currentrow < endrow){ //down
@@ -43,16 +44,21 @@ void junction(){
             up_down();
             first_junction = 'u';
             adding_instructions(first_junction);
+        }else if(matrix[currentrow + 1][currentcollumn] == 5){
+            currentrow++;
         }else{
             first_junction = sideways();
             adding_instructions(first_junction);
         }
     }if(currentrow > endrow){ //up
         if(matrix[currentrow-1][currentcollumn] == 1){
+            printf("Function Up_down called");
             up_down();
             first_junction = 'u';
             adding_instructions(first_junction);
-        }else{
+        }else if(matrix[currentrow - 1][currentcollumn] == 5){
+        currentrow--;}
+        else{
             first_junction = sideways();
             adding_instructions(first_junction);
         }
@@ -119,7 +125,7 @@ int up_down(){
 
 int finding_route(){
 	while(matrix[currentrow][currentcollumn] != matrix[endrow][endcollumn]){//Je kijkt 
-            sleep(0,5);
+            sleep(5);
             if(currentrow > endrow){
 			if (matrix[currentrow-1][currentcollumn] == 1){ 
 				up_down();}
@@ -128,6 +134,7 @@ int finding_route(){
                     up_down();
                 }
                 else if (matrix[currentrow-1][currentcollumn] == 4){
+                    printf("Function junction called \n");
                 junction();
             }
             }}else if(currentrow < endrow){
