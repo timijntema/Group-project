@@ -1,6 +1,6 @@
-#ifndef _BLUETOOTH_H
-    #define _BLUETOOTH_H
-    void check_bleutooth(string *s);
-    int bleutooth_control(string *s);
-    void checkbluetooth_main(strint *s);
+//#include "bluetooth.c"
+#ifndef BLUETOOTH_H_
+	#define BLUETOOTH_H_
+	void check_bluetooth(string *s);
+	int bluetooth_control(string *s);
 #endif

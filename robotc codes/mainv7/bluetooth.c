@@ -1,34 +1,36 @@
 #include "bluetooth.h"
 
-void check_bleutooth(string *s) {
+long nLastXmitTimeStamp = nPgmTime;
+long nDeltaTime = 0;
+
+const int kMaxSizeOfMessage = 30; //create a variable for the maximum message size
+const int INBOX = 5;
+
+task music();
+
+void check_bluetooth(string *s) {
     /*
             This function makes a bleutooth connection and then waits for input from the connected phone
      */
     TFileIOResult nBTCmdRdErrorStatus;
     int nSizeOfMessage;
     ubyte nRcvBuffer[kMaxSizeOfMessage];
+    //wait on bleutooth
+    nSizeOfMessage = cCmdMessageGetSize(INBOX);
 
-    while (1) {
-        //wait on bleutooth
-        nSizeOfMessage = cCmdMessageGetSize(INBOX);
+    if (nSizeOfMessage > kMaxSizeOfMessage) {//make the message shorter if its to long
+    	nSizeOfMessage = kMaxSizeOfMessage;
+    }
 
-        if (nSizeOfMessage > kMaxSizeOfMessage) {//make the message shorter if its to long
-            nSizeOfMessage = kMaxSizeOfMessage;
-        }
-
-        if (nSizeOfMessage > 0) {//if the message is not empty, put the received information in string s
-            nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
-            nRcvBuffer[nSizeOfMessage] = '\0';
-            stringFromChars(*s, (char *) nRcvBuffer);
-            displayCenteredBigTextLine(4, *s);
-            break;
-        }
-
-        wait1Msec(100); //no need to do a continues check every 100 miliseconds is enough
+    if (nSizeOfMessage > 0) {//if the message is not empty, put the received information in string s
+   		nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
+      nRcvBuffer[nSizeOfMessage] = '\0';
+      stringFromChars(*s, (char *) nRcvBuffer);
+      displayCenteredBigTextLine(4, *s);
     }
 }
 
-int bleutooth_control(string *s) {
+int bluetooth_control(string *s) {
     /*
             This code is for taking over the robot completely using bleutooth to make sure you can stop de robot in case its needed.
             pressing the middle button ("FIRE") on the phone stops the robot due to it not being included in the code here.
@@ -83,10 +85,7 @@ int bleutooth_control(string *s) {
     return stopcode; //output of the function used to stop the code if chosen
 }
 
-void checkbluetooth_main(strint *s) {
-    /*
-     This function checks the bluetooth
-     */
+/*void checkbluetooth_main(string *s) {
     TFileIOResult nBTCmdRdErrorStatus;
     int nSizeOfMessage;
     ubyte nRcvBuffer[kMaxSizeOfMessage];
@@ -99,8 +98,8 @@ void checkbluetooth_main(strint *s) {
     if (nSizeOfMessage > 0) {//if the message is not empty, put the received information in string s
         nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
         nRcvBuffer[nSizeOfMessage] = '\0';
-        s = "";
-        stringFromChars(s, (char *) nRcvBuffer); //put the received data in string s
-        displayCenteredBigTextLine(4, s);
+        *s = "";
+        stringFromChars(*s, (char *) nRcvBuffer); //put the received data in string s
+        displayCenteredBigTextLine(4, *s);
     }
-}
+}*/
