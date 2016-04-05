@@ -84,22 +84,3 @@ int bluetooth_control(string *s) {
     *s = ""; //make sure s is empty
     return stopcode; //output of the function used to stop the code if chosen
 }
-
-/*void checkbluetooth_main(string *s) {
-    TFileIOResult nBTCmdRdErrorStatus;
-    int nSizeOfMessage;
-    ubyte nRcvBuffer[kMaxSizeOfMessage];
-    nSizeOfMessage = cCmdMessageGetSize(INBOX);
-
-    if (nSizeOfMessage > kMaxSizeOfMessage) {//make the message shorter if its to long
-        nSizeOfMessage = kMaxSizeOfMessage;
-    }
-
-    if (nSizeOfMessage > 0) {//if the message is not empty, put the received information in string s
-        nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
-        nRcvBuffer[nSizeOfMessage] = '\0';
-        *s = "";
-        stringFromChars(*s, (char *) nRcvBuffer); //put the received data in string s
-        displayCenteredBigTextLine(4, *s);
-    }
-}*/
