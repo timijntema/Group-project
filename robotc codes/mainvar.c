@@ -13,6 +13,8 @@ long nDeltaTime         = 0;
 
 const int kMaxSizeOfMessage = 30;//create a variable for the maximum message size
 const int INBOX = 5;
+
+//variables for setting the minimum and maximum values of the light sensor and colorsensor
 int maxcolor = 57;
 int mincolor = 25;
 int maxlight = 76;
