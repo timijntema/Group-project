@@ -35,25 +35,12 @@ int bluetooth_control(string *s) {
             This code is for taking over the robot completely using bleutooth to make sure you can stop de robot in case its needed.
             pressing the middle button ("FIRE") on the phone stops the robot due to it not being included in the code here.
             To get in to this function you have to press "B"
-     */
-    TFileIOResult nBTCmdRdErrorStatus;
-    int nSizeOfMessage;
-    ubyte nRcvBuffer[kMaxSizeOfMessage];
+    */
     int stopcode = 0;
 
     while (*s != "A") {//if A is pressed the robot will resume its duty the normal way
-        nSizeOfMessage = cCmdMessageGetSize(INBOX);
-        if (nSizeOfMessage > kMaxSizeOfMessage) {
-            nSizeOfMessage = kMaxSizeOfMessage;
-        }
-        if (nSizeOfMessage > 0) {
-            nBTCmdRdErrorStatus = cCmdMessageRead(nRcvBuffer, nSizeOfMessage, INBOX);
-            nRcvBuffer[nSizeOfMessage] = '\0';
+        check_bluetooth(s);
 
-            *s = "";
-            stringFromChars(*s, (char *) nRcvBuffer); //put bluetooth input in string s
-            displayCenteredBigTextLine(4, *s);
-        }
         //The next 4 if statements are for controlling the robot manually
         if (*s == "LEFT") {//if bleutooth input is left turn left
             motor(motorA) = 0;
