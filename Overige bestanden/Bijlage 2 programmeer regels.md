@@ -2,7 +2,7 @@
 
 # Universele programeerregels:
 # 	Alles in het engels
-# 	Bij het maken van een functie altijd docstrings toevoegen (ook perameters)
+# 	Bij het maken van een functie altijd docstrings toevoegen (ook parameters)
 #	woord_woord (niet alleen voor variable maar ook voor functienamen) 
 # 	Global is toegestaan 
 # 	Geen Classes gebruiken 
