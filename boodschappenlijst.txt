@@ -1,0 +1,6 @@
+
+(200,200) RECTANGLE red (100,100)
+(300,300) RECTANGLE cyan (50,50)
+(400,415) LINE green (500,500)
+(361,300) PICTURE bird.png
+(27,52) CIRCLE green 124
